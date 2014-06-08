@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,9 @@ using Versionit.Models;
 
 namespace Versionit
 {
+    [Description(@"setup        
+[--dir <name>   ]  Sets the working directory. 
+[--list         ] Outputs current setup.")]
     class SetupCommand : ICommand
     {
         public const string COMMAND_SETUP_DIR = "--dir";

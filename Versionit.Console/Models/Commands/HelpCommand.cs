@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,19 +16,29 @@ namespace Versionit
 
         private ConsoleUtility _utility;
 
-        public HelpCommand(CommandParameters parameters)
+        private Type[] _types;
+
+        public HelpCommand(CommandParameters parameters,params Type[] types)
         {
             _parameters = parameters;
 
             _utility = new ConsoleUtility();
+
+            _types = types;
         }
 
         public void Run()
         {
-            _utility.WriteLine("setup --dir [directory to database]");
-            _utility.WriteLine("get --version [number of version]");
-            _utility.WriteLine("help");
-            _utility.WriteLine("exit");
+            foreach (var type in _types)
+            {
+                var descriptionAttribute = type.GetCustomAttributes(typeof(DescriptionAttribute),false).Cast<DescriptionAttribute>().SingleOrDefault();
+                
+                if (descriptionAttribute != null) 
+                {
+                    _utility.WriteLine(descriptionAttribute.Description);
+                    _utility.WriteLine("");
+                }
+            }
         }
     }
 }

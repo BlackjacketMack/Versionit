@@ -129,7 +129,10 @@ namespace Versionit
             }
             else if (commandParameters.Name == COMMAND_HELP)
             {
-                command = new HelpCommand(commandParameters);
+                command = new HelpCommand(commandParameters,typeof(SetupCommand),
+                                                            typeof(GetCommand),
+                                                            typeof(ScriptCommand),
+                                                            typeof(ExitCommand));
             }
             else if (commandParameters.Name == COMMAND_SCRIPT)
             {

@@ -8,11 +8,17 @@ using System.Threading.Tasks;
 using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
+using System.ComponentModel;
 
 namespace Versionit
 {
+    [Description(@"script   
+[--auto --direction <up,down>] Automatically chooses the version
+[--from <name> --to <name>]")]
     class ScriptCommand : ICommand
     {
+        public const string COMMAND_SCRIPT_AUTO = "--auto";
+        public const string COMMAND_SCRIPT_DIRECTION = "--direction";
         public const string COMMAND_SCRIPT_FROM = "--from";
         public const string COMMAND_SCRIPT_TO = "--to";
 
@@ -34,6 +40,8 @@ namespace Versionit
 
         private string _from;
         private string _to;
+        private bool _auto;
+        private string _direction;
 
         public ScriptCommand(CommandParameters commandParameters, 
                              SetupParameters setupParameters, 
@@ -97,16 +105,18 @@ String.Join(System.Environment.NewLine, _versionScripts.Select(s => s.Name)));
 
         private void parseParameters()
         {
-            _from = _commandParameters.GetAttribute(COMMAND_SCRIPT_FROM);
-            _to = _commandParameters.GetAttribute(COMMAND_SCRIPT_TO);
+            _auto = _commandParameters.Attributes.ContainsKey(COMMAND_SCRIPT_AUTO);
+            var direction = _commandParameters.GetAttribute(COMMAND_SCRIPT_DIRECTION,required:false) ?? "up";
+            _from = _commandParameters.GetAttribute(COMMAND_SCRIPT_FROM,required:false);
+            _to = _commandParameters.GetAttribute(COMMAND_SCRIPT_TO,required:false);
 
-            if (String.Compare(_from, _to) <= 0)
+            if (_auto)
             {
-                _versionDirection = VersionDirections.Up;
+                _versionDirection = direction.Equals("up", CommandParameters.ComparisonType) ? VersionDirections.Up : VersionDirections.Down;
             }
             else
             {
-                _versionDirection = VersionDirections.Down;
+                _versionDirection = String.Compare(_from, _to) <= 0 ? VersionDirections.Up : VersionDirections.Down;
             }
         }
 
@@ -143,6 +153,11 @@ String.Join(System.Environment.NewLine, _versionScripts.Select(s => s.Name)));
             }
 
             var versions = _versionRepository.Get(parameters).Skip(1);
+
+            if (_auto)
+            {
+                versions = new[] { versions.Last() };
+            }
 
             if (_versionDirection == VersionDirections.Up)
             {

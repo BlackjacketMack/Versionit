@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,10 @@ using Versionit.Models;
 
 namespace Versionit
 {
+    [Description(@"get   
+[--all]                         Gets all
+[--single <name>]               Gets one
+[--min <name> --max <name>]     Gets between the min and max inclusive")]  
     class GetCommand : ICommand
     {
         public const string COMMAND_GET_ALL = "--all";

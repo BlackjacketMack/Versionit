@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Repositories\Implementations\VersionRepository.cs" />
+    <Compile Include="Models\Commands\HelpCommand.cs" />
     <Compile Include="Models\Utilities\SqlMessageUtility.cs" />
     <Compile Include="Models\Utilities\IMessageUtility.cs" />
     <Compile Include="Models\Utilities\IFileUtility.cs" />
@@ -60,7 +61,6 @@
     <Compile Include="Models\Parameters\SetupParameters.cs" />
     <Compile Include="Models\Commands\ExitCommand.cs" />
     <Compile Include="Models\Commands\ScriptCommand.cs" />
-    <Compile Include="Models\Commands\HelpCommand.cs" />
     <Compile Include="Models\Commands\GetCommand.cs" />
     <Compile Include="Models\Commands\SetupCommand.cs" />
     <Compile Include="Models\Commands\ICommand.cs" />
