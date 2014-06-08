@@ -39,13 +39,13 @@ namespace Versionit
 
         public void Run()
         {
-            if (_setupParameters.WorkingDirectory == null)
+            if (_setupParameters.Directory == null)
             {
                 throw new ApplicationException("No working directory set.  Use 'setup --dir [workingdirectory] to continue.");
             }
 
             var versions = _versionRepository.Get(new GetVersionsParameters { 
-                                Path = _setupParameters.WorkingDirectory,
+                                Path = _setupParameters.Directory,
                                 Single = _commandParameters.Attributes.ContainsKey(COMMAND_GET_SINGLE) ? _commandParameters.Attributes[COMMAND_GET_SINGLE] : null,
                                 Min = _commandParameters.Attributes.ContainsKey(COMMAND_GET_MIN) ? _commandParameters.Attributes[COMMAND_GET_MIN] : null,
                                 Max = _commandParameters.Attributes.ContainsKey(COMMAND_GET_MAX) ? _commandParameters.Attributes[COMMAND_GET_MAX] : null

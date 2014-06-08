@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ using Versionit.Models;
 
 namespace Versionit
 {
-    class Prompt
+    class VersionitConsole
     {
         private const string COMMAND_SETUP = "setup";
         private const string COMMAND_GET = "get";
@@ -21,24 +22,30 @@ namespace Versionit
         private IVersionRepository _versionRepository;
         private ConsoleUtility _logger;
         private SetupParameters _setupParameters;
+        private IFileUtility _fileUtility;
+        private IMessageUtility _sqlMessageUtility;
 
         static void Main(string[] args)
         {
-            var prompt = new Prompt(PromptDependencyFactory.Resolve<IVersionRepository>());
+            var prompt = new VersionitConsole(PromptDependencyFactory.Resolve<IVersionRepository>());
 
             prompt.Init();
         }
 
-        public Prompt(IVersionRepository versionRepository)
+        public VersionitConsole(IVersionRepository versionRepository)
         {
             _versionRepository = versionRepository;
             _logger = new ConsoleUtility();
             _setupParameters = new SetupParameters();
+            _fileUtility = new FileUtility();
+            _sqlMessageUtility = new SqlMessageUtility();
         }
 
         public void Init()
         {
             welcome();
+
+            config();
 
             listen();
         }
@@ -50,6 +57,11 @@ namespace Versionit
             _logger.WriteLine("Welcome simple database version management.");
             _logger.WriteLine("Type 'help' to begin.");
             _logger.WriteLine("==================================================");
+        }
+
+        private void config()
+        {
+            _setupParameters.Directory = ConfigurationManager.AppSettings["Directory"];
         }
 
         private void listen()
@@ -118,12 +130,10 @@ namespace Versionit
             else if (commandParameters.Name == COMMAND_HELP)
             {
                 command = new HelpCommand(commandParameters);
-                ;
             }
             else if (commandParameters.Name == COMMAND_SCRIPT)
             {
-                command = new ScriptCommand(commandParameters,_setupParameters,_versionRepository);
-
+                command = new ScriptCommand(commandParameters, _setupParameters, _versionRepository, _fileUtility, new SqlMessageUtility());
             }
             else if (commandParameters.Name == COMMAND_EXIT)
             {

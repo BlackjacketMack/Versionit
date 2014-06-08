@@ -12,6 +12,7 @@ namespace Versionit.Data
     {
         public const string DOWNSCRIPT = "Down.sql";
         public const string UPSCRIPT = "Up.sql";
+        private StringComparison _stringComparison = StringComparison.OrdinalIgnoreCase;
 
         public IEnumerable<VersionModel> Get(GetVersionsParameters parameters)
         {
@@ -25,9 +26,9 @@ namespace Versionit.Data
             var subDirectories = directory.GetDirectories().Where(w=>!w.Name.StartsWith("_"));
 
             subDirectories = subDirectories.Where(w =>
-                                    (parameters.Single == null || String.Compare(w.Name,parameters.Single) == 0) &&
-                                    (parameters.Min == null || String.Compare(w.Name, parameters.Min) >= 0) &&
-                                    (parameters.Max == null || String.Compare(w.Name, parameters.Max) <= 0))
+                                    (parameters.Single == null || String.Compare(w.Name, parameters.Single, _stringComparison) == 0) &&
+                                    (parameters.Min == null || String.Compare(w.Name, parameters.Min, _stringComparison) >= 0) &&
+                                    (parameters.Max == null || String.Compare(w.Name, parameters.Max, _stringComparison) <= 0))
                                     .OrderBy(ob => ob.Name);
 
             foreach (var subDirectory in subDirectories)
@@ -37,8 +38,8 @@ namespace Versionit.Data
                     Database = directory.Name,
                     ID = 0,
                     Name = subDirectory.Name,
-                    DownScript = readScript(subDirectory + "\\" + DOWNSCRIPT),
-                    UpScript = readScript(subDirectory + "\\" + UPSCRIPT)
+                    DownScript = readScript(subDirectory.FullName + "\\" + DOWNSCRIPT),
+                    UpScript = readScript(subDirectory.FullName + "\\" + UPSCRIPT)
                 };
             }
         }

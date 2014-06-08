@@ -19,5 +19,15 @@ namespace Versionit
         {
             this.Attributes = new Dictionary<string, string>();
         }
+
+        public string GetAttribute(string key)
+        {
+            if (!this.Attributes.ContainsKey(key))
+            {
+                throw new ArgumentException("Attribute missing", key);
+            }
+
+            return this.Attributes[key];
+        }
     }
 }

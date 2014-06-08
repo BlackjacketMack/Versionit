@@ -33,14 +33,14 @@ namespace Versionit
         {
             if (_commandParameters.Attributes.ContainsKey(COMMAND_SETUP_LIST))
             {
-                _utility.WriteLine("Working Directory: " + _setupParameters.WorkingDirectory);
+                _utility.WriteLine("Working Directory: " + _setupParameters.Directory);
             }
 
             if (_commandParameters.Attributes.ContainsKey(COMMAND_SETUP_DIR))
             {
-                _setupParameters.WorkingDirectory = _commandParameters.Attributes[COMMAND_SETUP_DIR];
+                _setupParameters.Directory = _commandParameters.Attributes[COMMAND_SETUP_DIR];
 
-                _utility.WriteLine("Working directory set to " + _setupParameters.WorkingDirectory);
+                _utility.WriteLine("Working directory set to " + _setupParameters.Directory);
             }
         }
     }

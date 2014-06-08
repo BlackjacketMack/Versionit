@@ -11,6 +11,13 @@ namespace Versionit
 {
     class SetupParameters
     {
-        public string WorkingDirectory { get; set; }
+        public string Directory { get; set; }
+        public string WorkingDirectory
+        {
+            get
+            {
+                return this.Directory + "\\_versionit";
+            }
+        }
     }
 }

@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,6 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Repositories\Implementations\VersionRepository.cs" />
+    <Compile Include="Models\Utilities\SqlMessageUtility.cs" />
+    <Compile Include="Models\Utilities\IMessageUtility.cs" />
+    <Compile Include="Models\Utilities\IFileUtility.cs" />
+    <Compile Include="Models\Utilities\FileUtility.cs" />
     <Compile Include="Models\Parameters\SetupParameters.cs" />
     <Compile Include="Models\Commands\ExitCommand.cs" />
     <Compile Include="Models\Commands\ScriptCommand.cs" />
@@ -61,11 +66,13 @@
     <Compile Include="Models\Commands\ICommand.cs" />
     <Compile Include="Models\Parameters\GetVersionsParameters.cs" />
     <Compile Include="Data\Repositories\Interfaces\IVersionRepository.cs" />
-    <Compile Include="Models\ConsoleUtility.cs" />
+    <Compile Include="Models\Utilities\ConsoleUtility.cs" />
+    <Compile Include="Models\VersionDirections.cs" />
+    <Compile Include="Models\VersionScript.cs" />
     <Compile Include="Models\VersionModel.cs" />
     <Compile Include="Models\Parameters\CommandParameters.cs" />
     <Compile Include="PromptDependencyFactory.cs" />
-    <Compile Include="Prompt.cs" />
+    <Compile Include="VersionitConsole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
