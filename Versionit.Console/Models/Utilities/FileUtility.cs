@@ -12,18 +12,19 @@ namespace Versionit.Models
     {
         public string WriteFile(string text, SetupParameters setupParameters)
         {
-            createWorkingDirectory(setupParameters.WorkingDirectory);
+            createDirectory(setupParameters.WorkingDirectory);
+            createDirectory(setupParameters.ScriptDirectory);
 
-            var fileName = setupParameters.WorkingDirectory + "\\" + DateTime.UtcNow.ToString("yyyyMMddTHHmmss") + ".sql";
+             var fileName = setupParameters.ScriptDirectory + "\\" + DateTime.UtcNow.ToString("yyyyMMddTHHmmss") + ".sql";
 
             File.WriteAllText(fileName,text);
 
             return fileName;
         }
 
-        private void createWorkingDirectory(string workingDirectory)
-        {
-            var directoryInfo = new DirectoryInfo(workingDirectory);
+        private void createDirectory(string directory)
+        { 
+            var directoryInfo = new DirectoryInfo(directory);
 
             if (!directoryInfo.Exists)
             {

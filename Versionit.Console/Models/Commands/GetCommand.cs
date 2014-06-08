@@ -44,17 +44,28 @@ namespace Versionit
 
         public void Run()
         {
+            var allAttributeNames = new[]{
+                COMMAND_GET_ALL,
+                COMMAND_GET_SINGLE,
+                COMMAND_GET_MIN,
+                COMMAND_GET_MAX
+            };
+
             if (_setupParameters.Directory == null)
             {
                 throw new ApplicationException("No working directory set.  Use 'setup --dir [workingdirectory] to continue.");
             }
+            else if (!_commandParameters.Attributes.Select(s => s.Key).Intersect(allAttributeNames).Any())
+            {
+                throw new ApplicationException("Command parameters required.");
+            }
 
             var versions = _versionRepository.Get(new GetVersionsParameters { 
                                 Path = _setupParameters.Directory,
-                                Single = _commandParameters.Attributes.ContainsKey(COMMAND_GET_SINGLE) ? _commandParameters.Attributes[COMMAND_GET_SINGLE] : null,
-                                Min = _commandParameters.Attributes.ContainsKey(COMMAND_GET_MIN) ? _commandParameters.Attributes[COMMAND_GET_MIN] : null,
-                                Max = _commandParameters.Attributes.ContainsKey(COMMAND_GET_MAX) ? _commandParameters.Attributes[COMMAND_GET_MAX] : null
-            });
+                                Single = _commandParameters.GetAttribute(COMMAND_GET_SINGLE,required:false),
+                                Min = _commandParameters.GetAttribute(COMMAND_GET_MIN, required: false),
+                                Max = _commandParameters.GetAttribute(COMMAND_GET_MAX, required: false)
+                                });
 
             foreach (var version in versions)
             {

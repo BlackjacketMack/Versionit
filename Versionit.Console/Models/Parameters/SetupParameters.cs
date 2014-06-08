@@ -19,5 +19,13 @@ namespace Versionit
                 return this.Directory + "\\_versionit";
             }
         }
+
+        public string ScriptDirectory
+        {
+            get
+            {
+                return this.WorkingDirectory + "\\Scripts";
+            }
+        }
     }
 }

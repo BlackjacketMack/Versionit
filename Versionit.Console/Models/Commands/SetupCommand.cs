@@ -12,7 +12,8 @@ namespace Versionit
 {
     [Description(@"setup        
 [--dir <name>   ]  Sets the working directory. 
-[--list         ] Outputs current setup.")]
+[--list         ] Outputs current setup.
+*Setup reads from app.config when loading.")]
     class SetupCommand : ICommand
     {
         public const string COMMAND_SETUP_DIR = "--dir";
@@ -37,7 +38,8 @@ namespace Versionit
         {
             if (_commandParameters.Attributes.ContainsKey(COMMAND_SETUP_LIST))
             {
-                _utility.WriteLine("Working Directory: " + _setupParameters.Directory);
+                _utility.WriteLine("Base Directory: " + _setupParameters.Directory);
+                _utility.WriteLine("Working Directory: " + _setupParameters.WorkingDirectory);
             }
 
             if (_commandParameters.Attributes.ContainsKey(COMMAND_SETUP_DIR))
@@ -46,6 +48,11 @@ namespace Versionit
 
                 _utility.WriteLine("Working directory set to " + _setupParameters.Directory);
             }
+        }
+
+        private void saveSetup()
+        {
+
         }
     }
 }
