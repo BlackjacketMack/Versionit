@@ -19,6 +19,7 @@ namespace Versionit
         private const string COMMAND_HELP = "help";
         private const string COMMAND_EXIT = "exit";
 
+        private string[] _args; //initial args
         private IVersionRepository _versionRepository;
         private ConsoleUtility _logger;
         private SetupParameters _setupParameters;
@@ -27,13 +28,14 @@ namespace Versionit
 
         static void Main(string[] args)
         {
-            var prompt = new VersionitConsole(PromptDependencyFactory.Resolve<IVersionRepository>());
+            var prompt = new VersionitConsole(args,PromptDependencyFactory.Resolve<IVersionRepository>());
 
             prompt.Init();
         }
 
-        public VersionitConsole(IVersionRepository versionRepository)
+        public VersionitConsole(string[] args,IVersionRepository versionRepository)
         {
+            _args = args;
             _versionRepository = versionRepository;
             _logger = new ConsoleUtility();
             _setupParameters = new SetupParameters();
@@ -61,7 +63,18 @@ namespace Versionit
 
         private void config()
         {
-            _setupParameters.Directory = ConfigurationManager.AppSettings["Directory"];
+            var directory = (String)null;
+
+            if (_args.Any())
+            {
+                var attributes = ParameterUtility.ParseAttributes(String.Join(" ",_args));
+
+                if(attributes.ContainsKey("--dir")){
+                    directory = attributes["--dir"];
+                }
+            }
+
+            _setupParameters.Directory = directory;
         }
 
         private void listen()
@@ -92,25 +105,7 @@ namespace Versionit
 
             var command = new CommandParameters();
             command.Name = inputSplit[0].ToLower();
-
-            var name = inputSplit[0];
-            
-            for (int i = 1; i < inputSplit.Count(); i++)
-            {
-                var key = inputSplit[i];
-
-                var value = inputSplit.ElementAtOrDefault(i+1);
-
-                if(value == null || value.StartsWith("--")){
-
-                    command.Attributes.Add(inputSplit[i], null);
-                }
-                else
-                {
-                    command.Attributes.Add(key,value);
-                    i++;
-                }
-            }
+            command.Attributes = ParameterUtility.ParseAttributes(input);
 
             return command;
         }

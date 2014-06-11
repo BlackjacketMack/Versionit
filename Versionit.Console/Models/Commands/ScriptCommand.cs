@@ -13,12 +13,11 @@ using System.ComponentModel;
 namespace Versionit
 {
     [Description(@"script   
-[--auto --direction <up,down>] Automatically chooses the version
+[--auto <up,down>] Up is default if no value given.
 [--from <name> --to <name>]")]
     class ScriptCommand : ICommand
     {
         public const string COMMAND_SCRIPT_AUTO = "--auto";
-        public const string COMMAND_SCRIPT_DIRECTION = "--direction";
         public const string COMMAND_SCRIPT_FROM = "--from";
         public const string COMMAND_SCRIPT_TO = "--to";
 
@@ -40,7 +39,7 @@ namespace Versionit
 
         private string _from;
         private string _to;
-        private bool _auto;
+        private bool _isAuto;
         private string _direction;
 
         public ScriptCommand(CommandParameters commandParameters, 
@@ -105,14 +104,13 @@ String.Join(System.Environment.NewLine, _versionScripts.Select(s => s.Name)));
 
         private void parseParameters()
         {
-            _auto = _commandParameters.Attributes.ContainsKey(COMMAND_SCRIPT_AUTO);
-            var direction = _commandParameters.GetAttribute(COMMAND_SCRIPT_DIRECTION,required:false) ?? "up";
+            _isAuto = _commandParameters.Attributes.ContainsKey(COMMAND_SCRIPT_AUTO);
             _from = _commandParameters.GetAttribute(COMMAND_SCRIPT_FROM,required:false);
             _to = _commandParameters.GetAttribute(COMMAND_SCRIPT_TO,required:false);
 
-            if (_auto)
+            if (_isAuto)
             {
-                _versionDirection = direction.Equals("up", CommandParameters.ComparisonType) ? VersionDirections.Up : VersionDirections.Down;
+                _versionDirection = (VersionDirections)Enum.Parse(typeof(VersionDirections), (_commandParameters.Attributes[COMMAND_SCRIPT_AUTO] ?? "up"),true);
             }
             else
             {
@@ -154,7 +152,7 @@ String.Join(System.Environment.NewLine, _versionScripts.Select(s => s.Name)));
 
             var versions = _versionRepository.Get(parameters).Skip(1);
 
-            if (_auto)
+            if (_isAuto)
             {
                 versions = new[] { versions.Last() };
             }
