@@ -7,27 +7,31 @@ using System.Threading.Tasks;
 using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
+using Commandit;
 
 namespace Versionit
 {
-    class HelpCommand : ICommand
+    class InfoCommand : ICommand
     {
-        private CommandParameters _parameters;
+        public string Name
+        {
+            get { return "Info"; }
+        }
+
 
         private ConsoleUtility _utility;
 
         private Type[] _types;
 
-        public HelpCommand(CommandParameters parameters,params Type[] types)
+        public InfoCommand(params Type[] types)
         {
-            _parameters = parameters;
 
             _utility = new ConsoleUtility();
 
             _types = types;
         }
 
-        public void Run()
+        public void Run(ICommandContext context)
         {
             foreach (var type in _types)
             {

@@ -9,6 +9,7 @@ using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
 using System.ComponentModel;
+using Commandit;
 
 namespace Versionit
 {
@@ -17,13 +18,18 @@ namespace Versionit
 [--from <name> --to <name>]")]
     class ScriptCommand : ICommand
     {
-        public const string COMMAND_SCRIPT_AUTO = "--auto";
-        public const string COMMAND_SCRIPT_FROM = "--from";
-        public const string COMMAND_SCRIPT_TO = "--to";
+        public string Name
+        {
+            get { return "Script"; }
+        }
 
-        private CommandParameters _commandParameters;
+        public const string COMMAND_SCRIPT_AUTO = "auto";
+        public const string COMMAND_SCRIPT_FROM = "from";
+        public const string COMMAND_SCRIPT_TO = "to";
 
         private ConsoleUtility _utility;
+
+        private ICommandContext _context;
 
         private SetupParameters _setupParameters;
 
@@ -42,14 +48,11 @@ namespace Versionit
         private bool _isAuto;
         private string _direction;
 
-        public ScriptCommand(CommandParameters commandParameters, 
-                             SetupParameters setupParameters, 
+        public ScriptCommand(SetupParameters setupParameters, 
                              IVersionRepository versionRepository,
                             IFileUtility fileUtility,
                             IMessageUtility messageUtility)
         {
-            _commandParameters = commandParameters;
-
             _setupParameters = setupParameters;
 
             _utility = new ConsoleUtility();
@@ -61,8 +64,10 @@ namespace Versionit
             _messageUtility = messageUtility;
         }
 
-        public void Run()
+        public void Run(ICommandContext context)
         {
+            _context = context;
+
             parseParameters();
 
             _versionScripts = getVersionScripts();
@@ -104,13 +109,15 @@ String.Join(System.Environment.NewLine, _versionScripts.Select(s => s.Name)));
 
         private void parseParameters()
         {
-            _isAuto = _commandParameters.Attributes.ContainsKey(COMMAND_SCRIPT_AUTO);
-            _from = _commandParameters.GetAttribute(COMMAND_SCRIPT_FROM,required:false);
-            _to = _commandParameters.GetAttribute(COMMAND_SCRIPT_TO,required:false);
+            var parameters = _context.Parameters;
+
+            _isAuto = parameters.Attributes.ContainsKey(COMMAND_SCRIPT_AUTO);
+            _from = parameters.GetAttribute(COMMAND_SCRIPT_FROM, required: false);
+            _to = parameters.GetAttribute(COMMAND_SCRIPT_TO, required: false);
 
             if (_isAuto)
             {
-                _versionDirection = (VersionDirections)Enum.Parse(typeof(VersionDirections), (_commandParameters.Attributes[COMMAND_SCRIPT_AUTO] ?? "up"),true);
+                _versionDirection = (VersionDirections)Enum.Parse(typeof(VersionDirections), (parameters.Attributes[COMMAND_SCRIPT_AUTO] ?? "up"), true);
             }
             else
             {

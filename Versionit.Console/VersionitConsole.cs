@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
+using Commandit;
 
 namespace Versionit
 {
-    class VersionitConsole
+    class VersionitConsole : CommandConsole
     {
         private const string COMMAND_SETUP = "setup";
         private const string COMMAND_GET = "get";
@@ -33,7 +34,7 @@ namespace Versionit
             prompt.Init();
         }
 
-        public VersionitConsole(string[] args,IVersionRepository versionRepository)
+        public VersionitConsole(string[] args,IVersionRepository versionRepository) : base("Versionit")
         {
             _args = args;
             _versionRepository = versionRepository;
@@ -43,23 +44,24 @@ namespace Versionit
             _sqlMessageUtility = new SqlMessageUtility();
         }
 
-        public void Init()
+        public override void Init()
         {
-            welcome();
-
             config();
 
-            listen();
+            this.Commands = new ICommand[]{
+                new SetupCommand(_setupParameters),
+                new GetCommand(_setupParameters, _versionRepository),
+                new InfoCommand(typeof(SetupCommand),
+                                                            typeof(GetCommand),
+                                                            typeof(ScriptCommand),
+                                                            typeof(ExitCommand)),
+                 new ScriptCommand(_setupParameters, _versionRepository, _fileUtility, new SqlMessageUtility()),
+                 new ExitCommand()
+            };
+
+            base.Init();
         }
 
-        private void welcome()
-        {
-            _logger.WriteLine("==================================================");
-            _logger.WriteLine("Versionit");
-            _logger.WriteLine("Welcome simple database version management.");
-            _logger.WriteLine("Type 'help' to begin.");
-            _logger.WriteLine("==================================================");
-        }
 
         private void config()
         {
@@ -75,70 +77,6 @@ namespace Versionit
             }
 
             _setupParameters.Directory = directory;
-        }
-
-        private void listen()
-        {
-            var input = _logger.ReadLine();
-
-            try
-            {
-                var parameters = parseInput(input);
-
-                var command = createCommand(parameters);
-
-                command.Run();
-
-                _logger.WriteLine("--");
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteError(ex.Message);
-            }
-
-            listen();
-        }
-
-        private CommandParameters parseInput(string input)
-        {
-            var inputSplit = input.Split(' ').ToList();
-
-            var command = new CommandParameters();
-            command.Name = inputSplit[0].ToLower();
-            command.Attributes = ParameterUtility.ParseAttributes(input);
-
-            return command;
-        }
-
-        private ICommand createCommand(CommandParameters commandParameters)
-        {
-            ICommand command = null;
-
-            if (commandParameters.Name == COMMAND_SETUP)
-            {
-                command = new SetupCommand(commandParameters,_setupParameters);
-            }
-            else if (commandParameters.Name == COMMAND_GET)
-            {
-                command = new GetCommand(commandParameters, _setupParameters, _versionRepository);
-            }
-            else if (commandParameters.Name == COMMAND_HELP)
-            {
-                command = new HelpCommand(commandParameters,typeof(SetupCommand),
-                                                            typeof(GetCommand),
-                                                            typeof(ScriptCommand),
-                                                            typeof(ExitCommand));
-            }
-            else if (commandParameters.Name == COMMAND_SCRIPT)
-            {
-                command = new ScriptCommand(commandParameters, _setupParameters, _versionRepository, _fileUtility, new SqlMessageUtility());
-            }
-            else if (commandParameters.Name == COMMAND_EXIT)
-            {
-                command = new ExitCommand(commandParameters);
-            }
-
-            return command;
         }
     }
 }

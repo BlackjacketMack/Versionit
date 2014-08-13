@@ -55,7 +55,7 @@
     <ManifestKeyFile>Versionit_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -64,6 +64,9 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Commandit.Core">
+      <HintPath>Resources\Commandit.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
@@ -86,7 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Repositories\Implementations\VersionRepository.cs" />
-    <Compile Include="Models\Commands\HelpCommand.cs" />
+    <Compile Include="Models\Commands\InfoCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\Utilities\ParameterUtility.cs" />
     <Compile Include="Models\Utilities\SqlMessageUtility.cs" />
     <Compile Include="Models\Utilities\IMessageUtility.cs" />
@@ -97,7 +102,6 @@
     <Compile Include="Models\Commands\ScriptCommand.cs" />
     <Compile Include="Models\Commands\GetCommand.cs" />
     <Compile Include="Models\Commands\SetupCommand.cs" />
-    <Compile Include="Models\Commands\ICommand.cs" />
     <Compile Include="Models\Parameters\GetVersionsParameters.cs" />
     <Compile Include="Data\Repositories\Interfaces\IVersionRepository.cs" />
     <Compile Include="Models\Utilities\ConsoleUtility.cs" />
@@ -116,9 +120,6 @@
     <None Include="Versionit_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Samples\MyDatabase\201406071342\_Readme.md" />
-    <Content Include="Samples\MyDatabase\201406071342\Down.sql" />
-    <Content Include="Samples\MyDatabase\201406071342\Up.sql" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -127,7 +128,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Samples\MyDatabase\0\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

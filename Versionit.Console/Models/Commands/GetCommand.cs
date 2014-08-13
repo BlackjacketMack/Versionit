@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
+using Commandit;
 
 namespace Versionit
 {
@@ -16,12 +17,16 @@ namespace Versionit
 [--min <name> --max <name>]     Gets between the min and max inclusive")]  
     class GetCommand : ICommand
     {
+
+        public string Name
+        {
+            get { return "Get"; }
+        }
+
         public const string COMMAND_GET_ALL = "--all";
         public const string COMMAND_GET_SINGLE = "--single";
         public const string COMMAND_GET_MIN = "--min";
         public const string COMMAND_GET_MAX = "--max";
-
-        private CommandParameters _commandParameters;
 
         private SetupParameters _setupParameters;
 
@@ -29,12 +34,9 @@ namespace Versionit
 
         private IVersionRepository _versionRepository;
 
-        public GetCommand(CommandParameters commandParameters,
-                        SetupParameters setupParameters,
+        public GetCommand(SetupParameters setupParameters,
                         IVersionRepository versionRepository)
         {
-            _commandParameters = commandParameters;
-
             _setupParameters = setupParameters;
 
             _utility = new ConsoleUtility();
@@ -42,8 +44,10 @@ namespace Versionit
             _versionRepository = versionRepository;
         }
 
-        public void Run()
+        public void Run(ICommandContext context)
         {
+            var parameters = context.Parameters;
+
             var allAttributeNames = new[]{
                 COMMAND_GET_ALL,
                 COMMAND_GET_SINGLE,
@@ -55,16 +59,16 @@ namespace Versionit
             {
                 throw new ApplicationException("No working directory set.  Use 'setup --dir [workingdirectory] to continue.");
             }
-            else if (!_commandParameters.Attributes.Select(s => s.Key).Intersect(allAttributeNames).Any())
+            else if (!parameters.Attributes.Select(s => s.Key).Intersect(allAttributeNames).Any())
             {
                 throw new ApplicationException("Command parameters required.");
             }
 
             var versions = _versionRepository.Get(new GetVersionsParameters { 
                                 Path = _setupParameters.Directory,
-                                Single = _commandParameters.GetAttribute(COMMAND_GET_SINGLE,required:false),
-                                Min = _commandParameters.GetAttribute(COMMAND_GET_MIN, required: false),
-                                Max = _commandParameters.GetAttribute(COMMAND_GET_MAX, required: false)
+                                Single = parameters.GetAttribute(COMMAND_GET_SINGLE, required: false),
+                                Min = parameters.GetAttribute(COMMAND_GET_MIN, required: false),
+                                Max = parameters.GetAttribute(COMMAND_GET_MAX, required: false)
                                 });
 
             foreach (var version in versions)

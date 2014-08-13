@@ -16,11 +16,13 @@ namespace Versionit.Data
 
         public IEnumerable<VersionModel> Get(GetVersionsParameters parameters)
         {
+            parameters.Path = Path.GetFullPath(parameters.Path);
+
             var directory = new DirectoryInfo(parameters.Path);
 
             if (!directory.Exists)
             {
-                throw new ApplicationException("Specified directory does not exist.");
+                throw new ApplicationException("The specified directory '" + parameters.Path + "' does not exist.");
             }
 
             var subDirectories = directory.GetDirectories().Where(w=>!w.Name.StartsWith("_"));

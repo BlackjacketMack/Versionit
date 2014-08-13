@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
+using Commandit;
 
 namespace Versionit
 {
@@ -16,35 +17,38 @@ namespace Versionit
 *Setup reads from app.config when loading.")]
     class SetupCommand : ICommand
     {
+        public string Name
+        {
+            get { return "Setup"; }
+        }
+
         public const string COMMAND_SETUP_DIR = "--dir";
         public const string COMMAND_SETUP_LIST = "--list";
-
-        private CommandParameters _commandParameters;
 
         private SetupParameters _setupParameters;
 
         private ConsoleUtility _utility;
 
-        public SetupCommand(CommandParameters parameters, SetupParameters setupParameters)
+        public SetupCommand(SetupParameters setupParameters)
         {
-            _commandParameters = parameters;
-
             _setupParameters = setupParameters;
 
             _utility = new ConsoleUtility();
         }
 
-        public void Run()
+        public void Run(ICommandContext context)
         {
-            if (_commandParameters.Attributes.ContainsKey(COMMAND_SETUP_LIST))
+            var parameters = context.Parameters;
+
+            if (parameters.Attributes.ContainsKey(COMMAND_SETUP_LIST))
             {
                 _utility.WriteLine("Base Directory: " + _setupParameters.Directory);
                 _utility.WriteLine("Working Directory: " + _setupParameters.WorkingDirectory);
             }
 
-            if (_commandParameters.Attributes.ContainsKey(COMMAND_SETUP_DIR))
+            if (parameters.Attributes.ContainsKey(COMMAND_SETUP_DIR))
             {
-                _setupParameters.Directory = _commandParameters.Attributes[COMMAND_SETUP_DIR];
+                _setupParameters.Directory = parameters.Attributes[COMMAND_SETUP_DIR];
 
                 _utility.WriteLine("Working directory set to " + _setupParameters.Directory);
             }

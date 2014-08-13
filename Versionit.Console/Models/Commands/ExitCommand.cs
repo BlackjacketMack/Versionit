@@ -6,25 +6,26 @@ using System.Threading.Tasks;
 using Versionit.Core;
 using Versionit.Data;
 using Versionit.Models;
+using Commandit;
 
 namespace Versionit
 {
     class ExitCommand : ICommand
     {
-        private CommandParameters _parameters;
+        public string Name
+        {
+            get { return "Exit"; }
+        }
 
         private ConsoleUtility _utility;
 
-        public ExitCommand(CommandParameters parameters)
+        public ExitCommand()
         {
-            _parameters = parameters;
-
             _utility = new ConsoleUtility();
         }
 
-        public void Run()
+        public void Run(ICommandContext context)
         {
-
             _utility.WriteLine("Success! Press any key to continue.");
             Console.ReadKey();
         }
