@@ -46,6 +46,19 @@ namespace Versionit.Data
             }
         }
 
+        public void Create(VersionModel versionModel)
+        {
+            var subDirectory = versionModel.Database + "\\" + versionModel.Name;
+            if (Directory.Exists(subDirectory))
+            {
+                throw new ApplicationException("That version (directory) already exists.");
+            }
+
+            Directory.CreateDirectory(subDirectory);
+            File.CreateText(subDirectory + "\\Up.sql");
+            File.CreateText(subDirectory + "\\Down.sql");
+        }
+
         private string readScript(string filePath)
         {
             var fileInfo = new FileInfo(filePath);

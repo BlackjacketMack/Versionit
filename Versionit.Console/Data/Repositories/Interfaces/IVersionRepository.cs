@@ -10,5 +10,6 @@ namespace Versionit.Data
     internal interface IVersionRepository
     {
         IEnumerable<VersionModel> Get(GetVersionsParameters parameters);
+        void Create(VersionModel model);
     }    
 }

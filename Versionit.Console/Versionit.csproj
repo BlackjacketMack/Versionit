@@ -92,6 +92,7 @@
     <Compile Include="Models\Commands\InfoCommand.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Commands\CreateCommand.cs" />
     <Compile Include="Models\Utilities\ParameterUtility.cs" />
     <Compile Include="Models\Utilities\SqlMessageUtility.cs" />
     <Compile Include="Models\Utilities\IMessageUtility.cs" />

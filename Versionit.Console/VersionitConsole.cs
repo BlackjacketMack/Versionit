@@ -56,6 +56,7 @@ namespace Versionit
                                                             typeof(ScriptCommand),
                                                             typeof(ExitCommand)),
                  new ScriptCommand(_setupParameters, _versionRepository, _fileUtility, new SqlMessageUtility()),
+                 new CreateCommand(_setupParameters, _versionRepository),
                  new ExitCommand()
             };
 
