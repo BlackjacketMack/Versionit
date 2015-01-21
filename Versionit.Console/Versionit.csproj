@@ -48,7 +48,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <ManifestCertificateThumbprint>9D6464F48695722619038769E6AE9E9D425ED34C</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
@@ -59,7 +59,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
